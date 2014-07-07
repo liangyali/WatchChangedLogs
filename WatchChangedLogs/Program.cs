@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using CommandLine.Text;
 
 namespace WatchChangedLogs
 {
@@ -8,24 +7,27 @@ namespace WatchChangedLogs
     {
         static void Main(string[] args)
         {
-            var options = new ArgumentOptions();
-
-            if (CommandLine.Parser.Default.ParseArgumentsStrict(args, options))
+            if (args.Length < 1)
             {
-                var path = options.FilePath;
-
-                //检查文件是否存在
-                if (!File.Exists(path))
-                {
-                    Console.WriteLine("{0}不存在", path);
-                    return;
-                }
-
-                var logWatcher = new LogWatcher(path);
-                logWatcher.NewLogs += (sender, e) => Console.Write(e.Logs);
-                logWatcher.Start();
-                Console.Read();
+                Console.WriteLine("WatchChangedLogs [filePath]");
+                Console.WriteLine("请输入监控文件地址----");
+                return;
             }
+
+            var path = args[0];
+
+            //检查文件是否存在
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("{0}不存在", path);
+                return;
+            }
+
+            var logWatcher = new LogWatcher(path);
+            logWatcher.NewLogs += (sender, e) => Console.Write(e.Logs);
+            logWatcher.Start();
+            Console.Read();
+
         }
     }
 }
